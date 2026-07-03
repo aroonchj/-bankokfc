@@ -1,0 +1,330 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="robots" content="noindex, nofollow">
+<title>แอดมิน นักกีฬา — BANKOK FC</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Kanit:ital,wght@0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,700&family=IBM+Plex+Sans+Thai:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --ink:#0e0c0a; --ink-2:#1b1512; --ink-3:#241c17;
+    --red:#c8102e; --red-deep:#7a0e1f; --red-bright:#e11d2e;
+    --gold:#c9a227; --gold-soft:#e4c766;
+    --white:#fbf8f2; --line: rgba(241,233,216,0.14);
+    --display: "Kanit", sans-serif; --body: "IBM Plex Sans Thai", "Kanit", sans-serif;
+  }
+  *{box-sizing:border-box;}
+  body{margin:0; background:var(--ink); color:var(--white); font-family:var(--body); -webkit-font-smoothing:antialiased;}
+  img{max-width:100%; display:block;}
+  a{color:inherit; text-decoration:none;}
+  h1,h2,h3{font-family:var(--display); margin:0;}
+  .container{width:100%; max-width:820px; margin:0 auto; padding:0 24px;}
+  input, button{font-family:var(--body);}
+
+  header{padding:20px 0; border-bottom:1px solid var(--line);}
+  .nav-inner{display:flex; align-items:center; justify-content:space-between; max-width:820px; margin:0 auto; padding:0 24px;}
+  .brand{display:flex; align-items:center; gap:12px;}
+  .brand img{height:38px; width:38px;}
+  .brand b{font-family:var(--display); font-size:14px; letter-spacing:0.06em;}
+  .back-link{font-family:var(--display); font-size:13px; color:rgba(251,248,242,0.75); border:1px solid var(--line); padding:8px 16px;}
+  .back-link:hover{color:var(--gold-soft); border-color:var(--gold);}
+
+  /* ---- Lock screen ---- */
+  #lockScreen{
+    min-height:70vh; display:flex; align-items:center; justify-content:center; padding:40px 20px;
+  }
+  .lock-card{
+    width:100%; max-width:380px; border:1px solid var(--line); background:var(--ink-2);
+    padding:40px 32px; text-align:center;
+  }
+  .lock-card h2{font-size:22px; text-transform:uppercase; margin-bottom:8px;}
+  .lock-card p{color:rgba(251,248,242,0.6); font-size:13.5px; margin:0 0 24px;}
+  .lock-card input{
+    width:100%; padding:14px 16px; background:var(--ink); border:1px solid var(--line);
+    color:var(--white); font-size:15px; letter-spacing:0.1em; text-align:center; margin-bottom:14px;
+  }
+  .lock-card input:focus{outline:none; border-color:var(--gold);}
+  .btn{
+    width:100%; padding:14px; background:var(--red); color:var(--white); border:none;
+    font-family:var(--display); font-weight:600; letter-spacing:0.08em; font-size:13.5px;
+    text-transform:uppercase; cursor:pointer; transition:background .3s ease;
+  }
+  .btn:hover{background:var(--red-bright);}
+  .btn-secondary{background:transparent; border:1px solid var(--line); color:var(--white);}
+  .btn-secondary:hover{border-color:var(--gold); color:var(--gold-soft); background:transparent;}
+  .lock-error{color:var(--red-bright); font-size:13px; margin-top:12px; display:none;}
+
+  /* ---- Admin panel ---- */
+  #adminPanel{display:none; padding:50px 0 100px;}
+  .kicker{
+    font-family:var(--display); font-size:12px; letter-spacing:0.28em; font-weight:600;
+    color:var(--red-bright); text-transform:uppercase; margin-bottom:12px;
+  }
+  .panel-title{font-size:clamp(24px,4vw,34px); font-weight:800; text-transform:uppercase; margin-bottom:34px;}
+
+  .form-card{border:1px solid var(--line); background:var(--ink-2); padding:30px; margin-bottom:44px;}
+  .form-card h3{font-size:16px; margin-bottom:20px; text-transform:uppercase; letter-spacing:0.04em;}
+  .form-row{display:grid; grid-template-columns:1fr 1fr; gap:16px; margin-bottom:16px;}
+  .form-row.full{grid-template-columns:1fr;}
+  label{display:block; font-size:12px; letter-spacing:0.06em; color:rgba(251,248,242,0.6); margin-bottom:7px;}
+  input[type=text], input[type=number]{
+    width:100%; padding:12px 14px; background:var(--ink); border:1px solid var(--line);
+    color:var(--white); font-size:14px;
+  }
+  input[type=text]:focus, input[type=number]:focus{outline:none; border-color:var(--gold);}
+  .photo-row{display:flex; align-items:center; gap:18px; margin-bottom:20px;}
+  .photo-preview{
+    width:70px; height:70px; border-radius:50%; border:1px solid var(--gold); overflow:hidden;
+    background:var(--ink-3); display:flex; align-items:center; justify-content:center; flex:0 0 auto;
+  }
+  .photo-preview img{width:100%; height:100%; object-fit:cover;}
+  .photo-preview span{font-family:var(--display); font-size:11px; color:rgba(251,248,242,0.4);}
+  input[type=file]{color:rgba(251,248,242,0.7); font-size:13px;}
+  .form-msg{font-size:13px; margin-top:14px; display:none;}
+  .form-msg.ok{color:#7bc67e;}
+  .form-msg.err{color:var(--red-bright);}
+
+  .roster-table{border:1px solid var(--line);}
+  .roster-row{
+    display:grid; grid-template-columns:56px 1fr 90px 90px; align-items:center; gap:16px;
+    padding:14px 18px; border-top:1px solid var(--line);
+  }
+  .roster-row:first-child{border-top:none;}
+  .roster-photo{
+    width:44px; height:44px; border-radius:50%; overflow:hidden; background:var(--ink-3);
+    display:flex; align-items:center; justify-content:center; border:1px solid var(--line);
+  }
+  .roster-photo img{width:100%; height:100%; object-fit:cover;}
+  .roster-name{font-family:var(--display); font-size:14.5px; font-weight:500;}
+  .roster-number{font-size:13px; color:var(--gold-soft); text-align:center;}
+  .del-btn{
+    background:transparent; border:1px solid var(--red-deep); color:var(--red-bright);
+    padding:8px 10px; font-size:12px; cursor:pointer; font-family:var(--display);
+    letter-spacing:0.04em; transition:background .25s ease;
+  }
+  .del-btn:hover{background:var(--red-deep); color:var(--white);}
+  .roster-empty{padding:30px; text-align:center; color:rgba(251,248,242,0.5); font-size:13.5px;}
+
+  @media (max-width:600px){
+    .form-row{grid-template-columns:1fr;}
+    .roster-row{grid-template-columns:40px 1fr 60px; }
+    .roster-row .del-cell{grid-column:1 / -1; text-align:right;}
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="nav-inner">
+    <a class="brand" href="index.html">
+      <img src="assets/img/crest.png" alt="Bankok FC">
+      <b>ADMIN · นักกีฬา</b>
+    </a>
+    <a class="back-link" href="players.html">ดูหน้าสาธารณะ →</a>
+  </div>
+</header>
+
+<div id="lockScreen">
+  <div class="lock-card">
+    <h2>Admin Access</h2>
+    <p>กรอกรหัสผ่านแอดมินเพื่อจัดการรายชื่อนักกีฬา</p>
+    <input type="password" id="pinInput" placeholder="รหัสผ่าน" autocomplete="off">
+    <button class="btn" id="pinSubmit">เข้าสู่ระบบ</button>
+    <div class="lock-error" id="lockError">รหัสผ่านไม่ถูกต้อง ลองใหม่อีกครั้ง</div>
+  </div>
+</div>
+
+<div id="adminPanel">
+  <div class="container">
+    <div class="kicker">Admin Panel</div>
+    <h1 class="panel-title">จัดการรายชื่อนักกีฬา</h1>
+
+    <div class="form-card">
+      <h3>+ เพิ่มนักกีฬาใหม่</h3>
+      <div class="photo-row">
+        <div class="photo-preview" id="photoPreview"><span>รูป</span></div>
+        <input type="file" id="photoInput" accept="image/*">
+      </div>
+      <div class="form-row">
+        <div>
+          <label>ชื่อ</label>
+          <input type="text" id="firstNameInput" placeholder="ชื่อจริง">
+        </div>
+        <div>
+          <label>นามสกุล</label>
+          <input type="text" id="lastNameInput" placeholder="นามสกุล">
+        </div>
+      </div>
+      <div class="form-row">
+        <div>
+          <label>เบอร์เสื้อ (ไม่บังคับ)</label>
+          <input type="number" id="numberInput" placeholder="เช่น 11">
+        </div>
+      </div>
+      <button class="btn" id="addPlayerBtn">บันทึกนักกีฬา</button>
+      <div class="form-msg" id="formMsg"></div>
+    </div>
+
+    <h3 style="margin-bottom:16px;">รายชื่อทั้งหมด</h3>
+    <div class="roster-table" id="rosterTable">
+      <div class="roster-empty">กำลังโหลด...</div>
+    </div>
+
+    <div style="margin-top:40px;">
+      <button class="btn btn-secondary" id="logoutBtn" style="max-width:200px;">ออกจากระบบ</button>
+    </div>
+  </div>
+</div>
+
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
+<script src="assets/js/firebase-config.js"></script>
+<script>
+  const lockScreen = document.getElementById('lockScreen');
+  const adminPanel = document.getElementById('adminPanel');
+  const pinInput = document.getElementById('pinInput');
+  const pinSubmit = document.getElementById('pinSubmit');
+  const lockError = document.getElementById('lockError');
+  const logoutBtn = document.getElementById('logoutBtn');
+
+  function unlock(){
+    lockScreen.style.display = 'none';
+    adminPanel.style.display = 'block';
+    loadRoster();
+  }
+
+  if (sessionStorage.getItem('bankokAdminAuthed') === 'yes'){
+    unlock();
+  }
+
+  pinSubmit.addEventListener('click', () => {
+    if (pinInput.value === ADMIN_PIN){
+      sessionStorage.setItem('bankokAdminAuthed', 'yes');
+      unlock();
+    } else {
+      lockError.style.display = 'block';
+    }
+  });
+  pinInput.addEventListener('keydown', e => { if (e.key === 'Enter') pinSubmit.click(); });
+
+  logoutBtn.addEventListener('click', () => {
+    sessionStorage.removeItem('bankokAdminAuthed');
+    location.reload();
+  });
+
+  /* ---- Photo handling: resize + compress to base64 ---- */
+  let photoDataUrl = null;
+  const photoInput = document.getElementById('photoInput');
+  const photoPreview = document.getElementById('photoPreview');
+
+  photoInput.addEventListener('change', () => {
+    const file = photoInput.files[0];
+    if (!file) return;
+    const reader = new FileReader();
+    reader.onload = e => {
+      const img = new Image();
+      img.onload = () => {
+        const maxSize = 320;
+        let w = img.width, h = img.height;
+        if (w > h && w > maxSize){ h = h*(maxSize/w); w = maxSize; }
+        else if (h > maxSize){ w = w*(maxSize/h); h = maxSize; }
+        const canvas = document.createElement('canvas');
+        canvas.width = w; canvas.height = h;
+        canvas.getContext('2d').drawImage(img, 0, 0, w, h);
+        photoDataUrl = canvas.toDataURL('image/jpeg', 0.75);
+        photoPreview.innerHTML = `<img src="${photoDataUrl}" alt="preview">`;
+      };
+      img.src = e.target.result;
+    };
+    reader.readAsDataURL(file);
+  });
+
+  /* ---- Add player ---- */
+  const addPlayerBtn = document.getElementById('addPlayerBtn');
+  const formMsg = document.getElementById('formMsg');
+
+  addPlayerBtn.addEventListener('click', async () => {
+    const firstName = document.getElementById('firstNameInput').value.trim();
+    const lastName = document.getElementById('lastNameInput').value.trim();
+    const number = document.getElementById('numberInput').value.trim();
+
+    if (!firstName){
+      showMsg('กรุณากรอกชื่ออย่างน้อย', false);
+      return;
+    }
+    addPlayerBtn.disabled = true;
+    addPlayerBtn.textContent = 'กำลังบันทึก...';
+    try {
+      await db.collection('players').add({
+        firstName, lastName, number: number || null,
+        photo: photoDataUrl || null,
+        pin: ADMIN_PIN,
+        createdAt: firebase.firestore.FieldValue.serverTimestamp()
+      });
+      showMsg('เพิ่มนักกีฬาเรียบร้อยแล้ว ✓', true);
+      document.getElementById('firstNameInput').value = '';
+      document.getElementById('lastNameInput').value = '';
+      document.getElementById('numberInput').value = '';
+      photoInput.value = '';
+      photoDataUrl = null;
+      photoPreview.innerHTML = '<span>รูป</span>';
+    } catch (err){
+      console.error(err);
+      showMsg('เกิดข้อผิดพลาด: ตรวจสอบการตั้งค่า Firebase / Firestore Rules', false);
+    }
+    addPlayerBtn.disabled = false;
+    addPlayerBtn.textContent = 'บันทึกนักกีฬา';
+  });
+
+  function showMsg(text, ok){
+    formMsg.textContent = text;
+    formMsg.className = 'form-msg ' + (ok ? 'ok' : 'err');
+    formMsg.style.display = 'block';
+    setTimeout(() => formMsg.style.display = 'none', 4000);
+  }
+
+  /* ---- Roster list + delete ---- */
+  const rosterTable = document.getElementById('rosterTable');
+
+  function loadRoster(){
+    db.collection('players').orderBy('createdAt', 'asc').onSnapshot(snap => {
+      if (snap.empty){
+        rosterTable.innerHTML = '<div class="roster-empty">ยังไม่มีรายชื่อนักกีฬา</div>';
+        return;
+      }
+      rosterTable.innerHTML = '';
+      snap.forEach(doc => {
+        const p = doc.data();
+        const row = document.createElement('div');
+        row.className = 'roster-row';
+        row.innerHTML = `
+          <div class="roster-photo">${p.photo ? `<img src="${p.photo}">` : ''}</div>
+          <div class="roster-name">${p.firstName||''} ${p.lastName||''}</div>
+          <div class="roster-number">${p.number ? '#'+p.number : '—'}</div>
+          <div class="del-cell"><button class="del-btn" data-id="${doc.id}">ลบ</button></div>
+        `;
+        rosterTable.appendChild(row);
+      });
+      rosterTable.querySelectorAll('.del-btn').forEach(btn => {
+        btn.addEventListener('click', async () => {
+          if (!confirm('ยืนยันลบนักกีฬาคนนี้หรือไม่?')) return;
+          try {
+            await db.collection('players').doc(btn.dataset.id).delete();
+          } catch(err){
+            alert('ลบไม่สำเร็จ: ตรวจสอบ Firestore Rules');
+            console.error(err);
+          }
+        });
+      });
+    }, err => {
+      rosterTable.innerHTML = '<div class="roster-empty">โหลดข้อมูลไม่สำเร็จ ตรวจสอบการตั้งค่า Firebase</div>';
+      console.error(err);
+    });
+  }
+</script>
+
+</body>
+</html>
