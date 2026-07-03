@@ -1,0 +1,202 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>นักกีฬา — BANKOK FC</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Kanit:ital,wght@0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,700&family=IBM+Plex+Sans+Thai:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --ink:#0e0c0a; --ink-2:#1b1512; --ink-3:#241c17;
+    --red:#c8102e; --red-deep:#7a0e1f; --red-bright:#e11d2e;
+    --gold:#c9a227; --gold-soft:#e4c766;
+    --white:#fbf8f2; --line: rgba(241,233,216,0.14);
+    --display: "Kanit", sans-serif; --body: "IBM Plex Sans Thai", "Kanit", sans-serif;
+  }
+  *{box-sizing:border-box;}
+  body{margin:0; background:var(--ink); color:var(--white); font-family:var(--body); -webkit-font-smoothing:antialiased;}
+  img{max-width:100%; display:block;}
+  a{color:inherit; text-decoration:none;}
+  h1,h2,h3{font-family:var(--display); margin:0;}
+  .container{width:100%; max-width:1180px; margin:0 auto; padding:0 28px;}
+
+  header{
+    padding:20px 0; border-bottom:1px solid var(--line);
+    background:rgba(14,12,10,0.92); backdrop-filter:blur(10px);
+    position:sticky; top:0; z-index:10;
+  }
+  .nav-inner{display:flex; align-items:center; justify-content:space-between;}
+  .brand{display:flex; align-items:center; gap:12px;}
+  .brand img{height:40px; width:40px;}
+  .brand-text{display:flex; flex-direction:column; line-height:1.05;}
+  .brand-text b{font-family:var(--display); font-weight:700; font-size:14px; letter-spacing:0.06em;}
+  .brand-text span{font-size:10px; color:var(--gold-soft); letter-spacing:0.14em;}
+  .back-link{font-family:var(--display); font-size:13px; letter-spacing:0.06em; color:rgba(251,248,242,0.75); border:1px solid var(--line); padding:9px 18px;}
+  .back-link:hover{color:var(--gold-soft); border-color:var(--gold);}
+
+  .hero{padding:70px 0 40px; text-align:center;}
+  .kicker{
+    font-family:var(--display); font-size:12.5px; letter-spacing:0.3em; font-weight:600;
+    color:var(--red-bright); text-transform:uppercase; margin-bottom:14px;
+    display:inline-flex; align-items:center; gap:10px;
+  }
+  .kicker::before, .kicker::after{content:""; width:22px; height:2px; background:var(--red-bright);}
+  h1.page-title{font-size:clamp(32px,5vw,54px); font-weight:800; text-transform:uppercase;}
+  h1.page-title .accent{color:var(--gold-soft);}
+  .hero p{max-width:520px; margin:18px auto 0; color:rgba(251,248,242,0.72); font-size:15px; line-height:1.8;}
+
+  main{padding:10px 0 100px;}
+
+  .position-section{margin-top:44px;}
+  .position-section:first-child{margin-top:8px;}
+  .position-section-title{
+    font-family:var(--display); font-size:13.5px; font-weight:700; letter-spacing:0.2em;
+    text-transform:uppercase; color:var(--gold-soft); margin-bottom:18px;
+    display:flex; align-items:center; gap:12px;
+  }
+  .position-section-title::after{content:""; flex:1; height:1px; background:var(--line);}
+
+  .roster-grid{
+    display:grid; grid-template-columns:repeat(5,1fr); gap:16px;
+  }
+  @media (max-width:980px){.roster-grid{grid-template-columns:repeat(4,1fr);}}
+  @media (max-width:760px){.roster-grid{grid-template-columns:repeat(3,1fr); gap:12px;}}
+  @media (max-width:520px){.roster-grid{grid-template-columns:repeat(2,1fr); gap:10px;}}
+
+  .player-card{
+    position:relative; border:1px solid var(--line); background:var(--ink-2);
+    overflow:hidden; aspect-ratio:3/3.6;
+    transition:transform .3s ease, border-color .3s ease;
+  }
+  .player-card:hover{transform:translateY(-4px); border-color:var(--gold);}
+  .player-photo{
+    position:absolute; inset:0;
+    background:var(--ink-3); display:flex; align-items:center; justify-content:center;
+  }
+  .player-photo img{width:100%; height:100%; object-fit:cover;}
+  .player-photo .placeholder{font-family:var(--display); font-size:15vw; max-font-size:40px; color:rgba(251,248,242,0.18); font-weight:800;}
+  .player-card::after{
+    content:""; position:absolute; inset:0;
+    background:linear-gradient(180deg, transparent 45%, rgba(14,12,10,0.92) 100%);
+  }
+  .player-number-badge{
+    position:absolute; top:8px; right:8px; z-index:2;
+    font-family:var(--display); font-weight:800; font-size:13px; color:var(--white);
+    background:rgba(200,16,46,0.92); border:1px solid var(--gold);
+    width:26px; height:26px; border-radius:50%;
+    display:flex; align-items:center; justify-content:center;
+  }
+  .player-name{
+    position:absolute; left:0; right:0; bottom:0; z-index:2; padding:10px 8px;
+    font-family:var(--display); font-weight:600; font-size:12.5px; line-height:1.25;
+    text-align:center; color:var(--white);
+  }
+
+  .empty-state, .loading-state{
+    text-align:center; padding:70px 20px; border:1px dashed var(--line); color:rgba(251,248,242,0.55);
+    font-size:14.5px; line-height:1.8;
+  }
+
+  footer{border-top:1px solid var(--line); padding:30px 0; text-align:center; font-size:11.5px; color:rgba(251,248,242,0.4);}
+
+  @media (max-width:600px){
+    .hero{padding:44px 0 28px;}
+    .container{padding:0 18px;}
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="container nav-inner">
+    <a class="brand" href="index.html">
+      <img src="assets/img/crest.png" alt="Bankok FC">
+      <span class="brand-text"><b>BANKOK FC</b><span>หมู่ 6 · ทับช้าง · นาทวี</span></span>
+    </a>
+    <a class="back-link" href="index.html">← กลับหน้าแรก</a>
+  </div>
+</header>
+
+<div class="hero container">
+  <div class="kicker">The Squad</div>
+  <h1 class="page-title">นักกีฬา <span class="accent">บ้านคอก เอฟซี</span></h1>
+  <p>รายชื่อนักกีฬาทีมบ้านคอก ฟุตบอล คลับ หมู่ 6 ตำบลทับช้าง อัปเดตโดยทีมงานผู้จัดการทีม</p>
+</div>
+
+<main class="container">
+  <div id="rosterSections" style="display:none;"></div>
+  <div id="loadingState" class="loading-state">กำลังโหลดรายชื่อนักกีฬา...</div>
+  <div id="emptyState" class="empty-state" style="display:none;">ยังไม่มีรายชื่อนักกีฬาในระบบ</div>
+</main>
+
+<footer>© 2026 Bankok Football Club · หมู่ 6 ตำบลทับช้าง</footer>
+
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
+<script src="assets/js/firebase-config.js"></script>
+<script>
+  const sectionsWrap = document.getElementById('rosterSections');
+  const loadingState = document.getElementById('loadingState');
+  const emptyState = document.getElementById('emptyState');
+  const POSITION_ORDER = ['ผู้รักษาประตู','กองหลัง','กองกลาง','กองหน้า','ไม่ระบุตำแหน่ง'];
+
+  function initials(first, last){
+    const a = (first||'').trim().charAt(0);
+    const b = (last||'').trim().charAt(0);
+    return (a+b).toUpperCase() || '?';
+  }
+
+  function playerCardHtml(p){
+    const photoHtml = p.photo
+      ? `<img src="${p.photo}" alt="${(p.firstName||'')+' '+(p.lastName||'')}">`
+      : `<span class="placeholder">${initials(p.firstName,p.lastName)}</span>`;
+    return `
+      <div class="player-card">
+        <div class="player-photo">${photoHtml}</div>
+        ${p.number ? `<div class="player-number-badge">${p.number}</div>` : ''}
+        <div class="player-name">${p.firstName||''} ${p.lastName||''}</div>
+      </div>
+    `;
+  }
+
+  db.collection('players').orderBy('createdAt', 'asc').onSnapshot(snap => {
+    loadingState.style.display = 'none';
+    if (snap.empty){
+      sectionsWrap.style.display = 'none';
+      emptyState.style.display = 'block';
+      return;
+    }
+    emptyState.style.display = 'none';
+
+    const groups = {};
+    snap.forEach(doc => {
+      const p = doc.data();
+      const key = p.position || 'ไม่ระบุตำแหน่ง';
+      if (!groups[key]) groups[key] = [];
+      groups[key].push(p);
+    });
+
+    sectionsWrap.style.display = 'block';
+    sectionsWrap.innerHTML = '';
+    POSITION_ORDER.forEach(key => {
+      if (!groups[key]) return;
+      const section = document.createElement('div');
+      section.className = 'position-section';
+      section.innerHTML = `
+        <div class="position-section-title">${key}</div>
+        <div class="roster-grid">
+          ${groups[key].map(playerCardHtml).join('')}
+        </div>
+      `;
+      sectionsWrap.appendChild(section);
+    });
+  }, err => {
+    loadingState.textContent = 'ไม่สามารถโหลดข้อมูลได้ — โปรดตรวจสอบการตั้งค่า Firebase ในไฟล์ assets/js/firebase-config.js';
+    console.error(err);
+  });
+</script>
+
+</body>
+</html>
