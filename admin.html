@@ -21,11 +21,11 @@
   img{max-width:100%; display:block;}
   a{color:inherit; text-decoration:none;}
   h1,h2,h3{font-family:var(--display); margin:0;}
-  .container{width:100%; max-width:820px; margin:0 auto; padding:0 24px;}
+  .container{width:100%; max-width:1000px; margin:0 auto; padding:0 24px;}
   input, button{font-family:var(--body);}
 
   header{padding:20px 0; border-bottom:1px solid var(--line);}
-  .nav-inner{display:flex; align-items:center; justify-content:space-between; max-width:820px; margin:0 auto; padding:0 24px;}
+  .nav-inner{display:flex; align-items:center; justify-content:space-between; max-width:1000px; margin:0 auto; padding:0 24px;}
   .brand{display:flex; align-items:center; gap:12px;}
   .brand img{height:38px; width:38px;}
   .brand b{font-family:var(--display); font-size:14px; letter-spacing:0.06em;}
@@ -100,36 +100,53 @@
   }
   .position-heading:first-child{border-top:none;}
 
-  .roster-table{border:1px solid var(--line);}
-  .roster-row{
-    display:flex; align-items:center; gap:14px; flex-wrap:wrap;
-    padding:14px 18px; border-top:1px solid var(--line);
+  .roster-table{}
+  .roster-grid{
+    display:grid; grid-template-columns:repeat(auto-fill, minmax(150px,1fr)); gap:16px; margin-bottom:8px;
   }
-  .roster-row:first-child{border-top:none;}
-  .roster-photo{
-    width:44px; height:44px; border-radius:50%; overflow:hidden; background:var(--ink-3);
-    display:flex; align-items:center; justify-content:center; border:1px solid var(--line); flex:0 0 auto;
+  .admin-player-card{
+    border:1px solid var(--line); background:var(--ink-2); overflow:hidden;
+    display:flex; flex-direction:column;
   }
-  .roster-photo img{width:100%; height:100%; object-fit:cover;}
-  .roster-info{flex:1 1 140px; min-width:0;}
-  .roster-name{font-family:var(--display); font-size:14.5px; font-weight:500;}
-  .roster-number{font-size:12.5px; color:var(--gold-soft); margin-top:2px;}
-  .roster-actions{display:flex; gap:8px; flex:0 0 auto; margin-left:auto;}
-  .edit-btn, .del-btn{
-    background:transparent; border:1px solid var(--line); color:rgba(251,248,242,0.75);
-    padding:8px 12px; font-size:12px; cursor:pointer; font-family:var(--display);
-    letter-spacing:0.04em; transition:background .25s ease, border-color .25s ease, color .25s ease;
+  .admin-player-photo-wrap{
+    position:relative; aspect-ratio:3/3.4; background:var(--ink-3);
+    display:flex; align-items:center; justify-content:center; overflow:hidden;
   }
-  .edit-btn:hover{background:var(--gold); border-color:var(--gold); color:var(--ink);}
-  .del-btn{border-color:var(--red-deep); color:var(--red-bright);}
+  .admin-player-photo-wrap img{width:100%; height:100%; object-fit:cover;}
+  .admin-player-photo-wrap .placeholder{
+    font-family:var(--display); font-size:34px; font-weight:800; color:rgba(251,248,242,0.2);
+  }
+  .admin-player-photo-wrap::after{
+    content:""; position:absolute; inset:0;
+    background:linear-gradient(180deg, transparent 55%, rgba(14,12,10,0.88) 100%);
+  }
+  .admin-number-badge{
+    position:absolute; top:8px; right:8px; z-index:2;
+    font-family:var(--display); font-weight:800; font-size:13px; color:var(--white);
+    background:rgba(200,16,46,0.92); border:1px solid var(--gold);
+    width:26px; height:26px; border-radius:50%;
+    display:flex; align-items:center; justify-content:center;
+  }
+  .admin-player-name{
+    position:absolute; left:0; right:0; bottom:0; z-index:2; padding:8px 8px 6px;
+    font-family:var(--display); font-weight:600; font-size:13px; line-height:1.25;
+    text-align:center; color:var(--white);
+  }
+  .admin-card-actions{display:flex; border-top:1px solid var(--line);}
+  .admin-card-actions button{
+    flex:1; background:transparent; border:none; color:rgba(251,248,242,0.75);
+    padding:10px 6px; font-size:12px; cursor:pointer; font-family:var(--display);
+    letter-spacing:0.04em; transition:background .25s ease, color .25s ease;
+  }
+  .edit-btn{border-right:1px solid var(--line) !important;}
+  .edit-btn:hover{background:var(--gold); color:var(--ink);}
+  .del-btn{color:var(--red-bright);}
   .del-btn:hover{background:var(--red-deep); color:var(--white);}
   .roster-empty{padding:30px; text-align:center; color:rgba(251,248,242,0.5); font-size:13.5px;}
 
   @media (max-width:600px){
     .form-row{grid-template-columns:1fr;}
-    .roster-row{padding:16px 14px;}
-    .roster-actions{width:100%; margin-left:0; margin-top:10px; justify-content:flex-end;}
-    .edit-btn, .del-btn{flex:1; text-align:center; padding:10px 8px;}
+    .roster-grid{grid-template-columns:repeat(2,1fr); gap:12px;}
   }
 </style>
 </head>
@@ -386,24 +403,29 @@
         heading.textContent = key + ' (' + groups[key].length + ')';
         rosterTable.appendChild(heading);
 
+        const grid = document.createElement('div');
+        grid.className = 'roster-grid';
+        rosterTable.appendChild(grid);
+
         groups[key].forEach(p => {
-          const row = document.createElement('div');
-          row.className = 'roster-row';
-          row.innerHTML = `
-            <div class="roster-photo">${p.photo ? `<img src="${p.photo}">` : ''}</div>
-            <div class="roster-info">
-              <div class="roster-name">${p.firstName||''} ${p.lastName||''}</div>
-              <div class="roster-number">${p.number ? '#'+p.number : '—'}</div>
+          const card = document.createElement('div');
+          card.className = 'admin-player-card';
+          const initials = ((p.firstName||'').charAt(0) + (p.lastName||'').charAt(0)).toUpperCase() || '?';
+          card.innerHTML = `
+            <div class="admin-player-photo-wrap">
+              ${p.photo ? `<img src="${p.photo}">` : `<span class="placeholder">${initials}</span>`}
+              ${p.number ? `<div class="admin-number-badge">${p.number}</div>` : ''}
+              <div class="admin-player-name">${p.firstName||''} ${p.lastName||''}</div>
             </div>
-            <div class="roster-actions">
+            <div class="admin-card-actions">
               <button class="edit-btn" data-id="${p.id}">แก้ไข</button>
               <button class="del-btn" data-id="${p.id}">ลบ</button>
             </div>
           `;
-          rosterTable.appendChild(row);
+          grid.appendChild(card);
 
-          row.querySelector('.edit-btn').addEventListener('click', () => startEdit(p.id, p));
-          row.querySelector('.del-btn').addEventListener('click', async () => {
+          card.querySelector('.edit-btn').addEventListener('click', () => startEdit(p.id, p));
+          card.querySelector('.del-btn').addEventListener('click', async () => {
             if (!confirm('ยืนยันลบนักกีฬาคนนี้หรือไม่?')) return;
             try {
               await db.collection('players').doc(p.id).delete();
